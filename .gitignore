@@ -130,4 +130,4 @@ dmypy.json
 
 # info.ini file
 ## 보완
-info.ini
+*.ini

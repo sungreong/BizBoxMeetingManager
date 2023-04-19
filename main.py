@@ -82,11 +82,11 @@ class Schedule(QWidget):
 
         # 5. combo box로 대,중,소 회의실이 있어야 해
         self.room_combo = QComboBox(self)
-        self.room_combo.addItems(["2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실"])
+        self.room_combo.addItems(["2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실","Zoom1","Zoom2"])
         self.room_combo.setGeometry(300, 220, 100, 30)
 
         self.filter_combo = QComboBox(self)
-        self.filter_combo.addItems(["전체", "2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실"])
+        self.filter_combo.addItems(["전체", "2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실","Zoom1 : agilesoda@agilesoda.ai","Zoom2 : agilesoda2@agilesoda.ai"])
         self.filter_combo.setGeometry(20, 460, 100, 30)
         self.filter_combo.activated[str].connect(self.filter_schedule)
 

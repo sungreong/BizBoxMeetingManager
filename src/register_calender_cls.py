@@ -127,15 +127,16 @@ class BizBoxCommon(object):
             start_date, start_time = get_date_pattern(start_time_str)
             end_date, end_time = get_date_pattern(end_time_str)
             return [start_date, end_date, start_time, end_time]
-
-        df_room = df[~df["장소"].str.contains("Zoom")]
-        df_zoom = df[df["장소"].str.contains("Zoom")]
+        
+        df_room = df
+        # df_room = df[~df["장소"].str.contains("Zoom")]
+        # df_zoom = df[df["장소"].str.contains("Zoom")]
 
         df_room[["시작날짜", "종료날짜", "시작시간", "종료시간"]] = df_room["시간"].apply(get_start_end_datetime).apply(pd.Series)
         df_room.drop(columns=["시간"], inplace=True)
         df_room = df_room.sort_values(by=["장소", "시작날짜", "시작시간"]).reset_index(drop=True)
-        ROOM_LIST = ["2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실"]
-        print(df_room.query(f'장소 == "{ROOM_LIST[0]}"').to_markdown())
+        # ROOM_LIST = ["2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실"]
+        # print(df_room.query(f'장소 == "{ROOM_LIST[0]}"').to_markdown())
         return df_room
 
     def add_schedule(self, title="제목", date="2021-01-01", start_time="09:00", end_time="10:00", meeting_room="2F) 대회의실") :
