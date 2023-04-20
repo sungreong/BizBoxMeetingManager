@@ -17,7 +17,7 @@ class BizBoxCommon(object):
 
     def open(self):
         options = webdriver.ChromeOptions()
-        options.add_argument("headless")
+        # options.add_argument("headless")
         options.add_argument("--window-size=1920,1000")
         options.add_argument("disable-gpu")
         path = chromedriver_autoinstaller.install()
@@ -139,7 +139,7 @@ class BizBoxCommon(object):
         # print(df_room.query(f'장소 == "{ROOM_LIST[0]}"').to_markdown())
         return df_room
 
-    def add_schedule(self, title="제목", date="2021-01-01", start_time="09:00", end_time="10:00", meeting_room="2F) 대회의실") :
+    def add_schedule(self, title="제목", date="2021-01-01", start_time="09:00", end_time="10:00", meeting_room="2F) 대회의실", attendee_list=[],) :
                     
         # iFrame에서 기본 페이지로 돌아가기
         self.driver.switch_to.default_content()
@@ -195,40 +195,40 @@ class BizBoxCommon(object):
         ##########################
         # 추가 인원 등록 
         # 사용자 추가
-        # self.driver.switch_to_window(self.driver.window_handles[0])  # search page
-        # iframe_element = self.driver.find_element_by_tag_name("iframe")
+        self.driver.switch_to_window(self.driver.window_handles[0])  # search page
+        iframe_element = self.driver.find_element_by_tag_name("iframe")
 
-        # self.driver.switch_to.frame(iframe_element)
-        # button = WebDriverWait(self.driver, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, "//button[contains(text(), '선택')]"))
-        # )
+        self.driver.switch_to.frame(iframe_element)
+        button = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(text(), '선택')]"))
+        )
 
         # 버튼을 클릭합니다.
-        # button.click()
-        # # 해당 input 태그를 찾습니다.
-        # self.driver.switch_to_window(self.driver.window_handles[-1])  # search page
+        button.click()
+        if attendee_list == [] :
+            pass 
+        else :
+            # 해당 input 태그를 찾습니다.
+            self.driver.switch_to_window(self.driver.window_handles[-1])  # search page
 
-        # input_elem = self.driver.find_element_by_id("text_input")
+            input_elem = self.driver.find_element_by_id("text_input")
+            # input 태그에 값을 입력합니다.
+            for person in attendee_list :
+                input_elem.clear()
+                input_elem.send_keys(person)
+                # 버튼을 클릭합니다.
+                link_elem = self.driver.find_element_by_css_selector("a.btn_sear.btn_search")
+                link_elem.click()
+                # 체크 박스를 찾아 클릭합니다.
+                # checkbox_elem = self.driver.find_element_by_css_selector("label[for='inp_chk_indexOf4']")
+                sleep(0.5)
+                element = self.driver.find_element_by_xpath(f"//td[contains(text(), '{person}')]/..//input[@type='checkbox']")
+                self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                self.driver.execute_script("arguments[0].click();", element)
 
-        # # input 태그에 값을 입력합니다.
-        # input_elem.send_keys("")
-        # input_elem.send_keys("송유한")
+            button = self.driver.find_element_by_id("btn_save")
+            self.driver.execute_script("arguments[0].click();", button)
 
-        # # 버튼을 클릭합니다.
-
-        # link_elem = self.driver.find_element_by_css_selector("a.btn_sear.btn_search")
-        # link_elem.click()
-        # # 체크 박스를 찾아 클릭합니다.
-        # checkbox_elem = self.driver.find_element_by_css_selector("label[for='inp_chk_indexOf3']")
-        # checkbox_elem.click()
-
-
-        # 버튼 element 탐색
-        # button = self.driver.find_element_by_xpath('//div[@id="btn_cen.pt12"]//input[@value="저장"]')
-        # # 해당 버튼을 찾습니다.
-        # button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@id='btn_save']")))
-        # # 버튼 클릭
-        # button.click()
         ##########################
 
         self.driver.switch_to_window(self.driver.window_handles[0])  # main page

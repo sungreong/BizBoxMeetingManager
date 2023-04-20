@@ -54,6 +54,14 @@ class Schedule(QWidget):
         self.content_text = QLineEdit(self)
         self.content_text.setGeometry(300, 100, 100, 30)
         content_hbox.addWidget(self.content_text)
+        
+        attendees_hbox = QHBoxLayout()
+        attendees_label = QLabel("참석자:")
+        attendees_hbox.addWidget(attendees_label)
+        self.attendees_text = QLineEdit(self)
+        self.attendees_text.setGeometry(300, 100, 100, 30)
+        attendees_hbox.addWidget(self.attendees_text)
+        
 
         start_time_hbox = QHBoxLayout()
         start_time_label = QLabel("시작시간:")
@@ -102,6 +110,7 @@ class Schedule(QWidget):
         vbox.addLayout(start_time_hbox)
         vbox.addLayout(end_time_hbox)
         vbox.addLayout(content_hbox)
+        vbox.addLayout(attendees_hbox)
         vbox.addWidget(self.room_combo)
         vbox.addLayout(btn_hbox)
 
@@ -175,8 +184,9 @@ class Schedule(QWidget):
         end_time = self.end_time_text.text()
         room = self.room_combo.currentText()
         content = self.content_text.text()
+        attendee_list = self.attendees_text.text().split(",")
         try :
-            self.bizbox.add_schedule(title=content,date=date, start_time=start_time, end_time=end_time, meeting_room=room)
+            self.bizbox.add_schedule(title=content,date=date, start_time=start_time, end_time=end_time, meeting_room=room,attendee_list=attendee_list,)
         except Exception as e :
             QMessageBox.warning(self, "오류", str(e))
         else :

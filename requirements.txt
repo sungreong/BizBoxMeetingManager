@@ -1,0 +1,4 @@
+chromedriver_autoinstaller==0.4.0
+pandas==1.4.3
+PyQt5==5.15.9
+selenium==3.141.0
