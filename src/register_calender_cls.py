@@ -17,7 +17,7 @@ class BizBoxCommon(object):
 
     def open(self):
         options = webdriver.ChromeOptions()
-        # options.add_argument("headless")
+        options.add_argument("headless")
         options.add_argument("--window-size=1920,1000")
         options.add_argument("disable-gpu")
         path = chromedriver_autoinstaller.install()
