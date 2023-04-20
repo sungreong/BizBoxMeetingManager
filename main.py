@@ -187,7 +187,7 @@ class Schedule(QWidget):
         end_time = self.end_time_text.text()
         room = self.room_combo.currentText()
         content = self.content_text.text()
-        attendee_list = self.attendees_text.text().split(",")
+        attendee_list = [i.stirp() for i in self.attendees_text.text().split(",")]
         try :
             self.bizbox.add_schedule(title=content,date=date, start_time=start_time, end_time=end_time, meeting_room=room,attendee_list=attendee_list,)
         except Exception as e :
