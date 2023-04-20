@@ -115,11 +115,14 @@ class Schedule(QWidget):
         vbox.addLayout(btn_hbox)
 
         # 6. 회의실을 등록하면, 테이블에 추가 되는 기능
+        table_hbox = QHBoxLayout()
         self.table = QTableWidget(self)
-        self.table.setGeometry(20, 240, 380, 200)
+        self.table.setGeometry(20, 240, 380, 400)
         self.table.setColumnCount(5)
         self.table.setHorizontalHeaderLabels(["날짜", "시작시간", "종료시간", "회의실", "내용"])
-
+        table_hbox.addWidget(self.table)
+        vbox.addLayout(table_hbox)
+        
         font = QFont()
         font.setBold(True)
         self.table.horizontalHeader().setFont(font)
@@ -129,7 +132,7 @@ class Schedule(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.calendar)
         layout.addLayout(vbox)
-        layout.addWidget(self.table)
+        # layout.addWidget(self.table)
 
         self.setLayout(layout)
         self.bizbox = BizBoxCommon(user=self.config["USER"]["id"],pw=self.config["USER"]["pw"])
@@ -199,15 +202,15 @@ class Schedule(QWidget):
             self.table.setItem(row_count, 3, QTableWidgetItem(room))
             self.table.setItem(row_count, 4, QTableWidgetItem(content))
             QMessageBox.information(self, "알림", f"회의 스케줄이 등록되었습니다.\n날짜 : {date}\n미팅룸 : {room}\n시간 : {start_time}~{end_time} ")
-    def resizeEvent(self, event):
-        # 화면 크기가 조정될 때 테이블의 크기를 조정합니다.
-        self.table.setGeometry(20, 300, self.width() - 40, self.height() - 350)
+    # def resizeEvent(self, event):
+    #     # 화면 크기가 조정될 때 테이블의 크기를 조정합니다.
+    #     self.table.setGeometry(20, 300, self.width() - 40, self.height() - 350)
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     schedule = Schedule()
-    schedule.setGeometry(100, 100, 600, 700)
+    schedule.setGeometry(100, 100, 600, 900)
     schedule.setWindowTitle("BizBox 회의 스케줄 관리 프로그램")
     schedule.show()
     sys.exit(app.exec_())
