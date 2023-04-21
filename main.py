@@ -89,20 +89,26 @@ class Schedule(QWidget):
         self.reg_btn.clicked.connect(self.reg_schedule)
 
         # 5. combo box로 대,중,소 회의실이 있어야 해
+        reg_hbox = QHBoxLayout()
+        reg_label = QLabel("등록")
+        reg_hbox.addWidget(reg_label)
         self.room_combo = QComboBox(self)
-        self.room_combo.addItems(["2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실","Zoom1","Zoom2"])
+        self.room_combo.addItems(["2F) 자율좌석 회의실", "2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실","Zoom1","Zoom2"])
         self.room_combo.setGeometry(300, 220, 100, 30)
+        reg_hbox.addWidget(self.room_combo)
+        reg_hbox.addWidget(self.reg_btn)
 
-        self.filter_combo = QComboBox(self)
-        self.filter_combo.addItems(["전체", "2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실","Zoom1 : agilesoda@agilesoda.ai","Zoom2 : agilesoda2@agilesoda.ai"])
-        self.filter_combo.setGeometry(20, 460, 100, 30)
-        self.filter_combo.activated[str].connect(self.filter_schedule)
-
+        
         # QHBoxLayout로 QPushButton을 가로로 배치
         btn_hbox = QHBoxLayout()
+        btn_label = QLabel("조회")
+        btn_hbox.addWidget(btn_label)
+        self.filter_combo = QComboBox(self)
+        self.filter_combo.addItems(["전체", "2F) 자율좌석 회의실","2F) 대회의실", "2F) 소회의실", "3F) 대회의실", "3F) 소회의실", "3F) 중회의실","Zoom1 : agilesoda@agilesoda.ai","Zoom2 : agilesoda2@agilesoda.ai"])
+        self.filter_combo.setGeometry(300, 220, 100, 30)
+        self.filter_combo.activated[str].connect(self.filter_schedule)
         btn_hbox.addWidget(self.filter_combo)
         btn_hbox.addWidget(self.view_btn)
-        btn_hbox.addWidget(self.reg_btn)
 
         # QVBoxLayout로 QHBoxLayout을 세로로 배치
         vbox = QVBoxLayout()
@@ -111,8 +117,8 @@ class Schedule(QWidget):
         vbox.addLayout(end_time_hbox)
         vbox.addLayout(content_hbox)
         vbox.addLayout(attendees_hbox)
-        vbox.addWidget(self.room_combo)
         vbox.addLayout(btn_hbox)
+        vbox.addLayout(reg_hbox)
 
         # 6. 회의실을 등록하면, 테이블에 추가 되는 기능
         table_hbox = QHBoxLayout()
@@ -187,7 +193,10 @@ class Schedule(QWidget):
         end_time = self.end_time_text.text()
         room = self.room_combo.currentText()
         content = self.content_text.text()
-        attendee_list = [i.stirp() for i in self.attendees_text.text().split(",")]
+        if len(self.attendees_text.text()) == 0 :
+            attendee_list = []
+        else :
+            attendee_list = [i.stirp() for i in self.attendees_text.text().split(",")]
         try :
             self.bizbox.add_schedule(title=content,date=date, start_time=start_time, end_time=end_time, meeting_room=room,attendee_list=attendee_list,)
         except Exception as e :
