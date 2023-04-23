@@ -69,7 +69,6 @@ class BizBoxCommon(object):
             """
             # 회의실 예약 정보 확인하기
             """
-
             date_element = self.driver.find_element_by_id("from_date")
             self.driver.execute_script(f"arguments[0].value = '{date}';", date_element)
 
@@ -82,7 +81,7 @@ class BizBoxCommon(object):
             # 버튼을 클릭합니다.
             button.click()
 
-            sleep(0.1)
+            sleep(0.5)
             # 페이지에서 k-pager-numbers 클래스를 가진 엘리먼트 가져오기
             page_numbers = self.driver.find_element_by_class_name("k-pager-numbers")
 
@@ -90,7 +89,10 @@ class BizBoxCommon(object):
             page_links = page_numbers.find_elements_by_tag_name("a")
 
             # 각 링크의 data-page 속성 값 가져오기
-            max_page_number = int(max([page_link.get_attribute("data-page") for page_link in page_links]))
+            if len(page_links) == 0:
+                max_page_number = 1
+            else :
+                max_page_number = int(max([page_link.get_attribute("data-page") for page_link in page_links]))
         except Exception as e : 
             raise Exception(e)
         # 데이터를 저장할 빈 리스트 생성
