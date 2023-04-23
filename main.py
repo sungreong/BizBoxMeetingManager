@@ -200,11 +200,11 @@ class Schedule(QWidget):
         if validate_time_format(start_time) :
             pass 
         else :
-            return QMessageBox.information(self,"알림", "시작 시간 형식이 잘못되었습니다.")
+            return QMessageBox.warning(self,"알림(오류)", "시작 시간 형식이 잘못되었습니다.")
         if validate_time_format(end_time) :
             pass 
         else :
-            return QMessageBox.information(self,"알림", "종료 시간 형식이 잘못되었습니다.")
+            return QMessageBox.warning(self,"알림(오류)", "종료 시간 형식이 잘못되었습니다.")
 
     def view_time_schedule(self) :
         self.check_time_format()
@@ -213,7 +213,7 @@ class Schedule(QWidget):
         end_time = self.end_time_text.text()
         
         if start_time > end_time :
-            return QMessageBox.information(self,"알림", "시작 시간이 종료 시간보다 늦습니다.")
+            return QMessageBox.warning(self,"알림(오류)", "시작 시간이 종료 시간보다 늦습니다.")
         else :
             pass 
 
@@ -271,6 +271,8 @@ class Schedule(QWidget):
         self.check_time_format()
         room = self.room_combo.currentText()
         content = self.content_text.text()
+        if len(content) == 0 :
+            return QMessageBox.warning(self, "알림(오류)", "회의명을 입력해주세요.")
         if len(self.attendees_text.text()) == 0 :
             attendee_list = []
         else :
@@ -278,7 +280,7 @@ class Schedule(QWidget):
         try :
             self.bizbox.add_schedule(title=content,date=date, start_time=start_time, end_time=end_time, meeting_room=room,attendee_list=attendee_list,)
         except Exception as e :
-            QMessageBox.warning(self, "오류", str(e))
+            QMessageBox.warning(self, "알림(오류)", str(e))
         else :
             # 등록된 스케줄을 테이블에 추가합니다.
             row_count = self.table.rowCount()
