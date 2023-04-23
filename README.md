@@ -1,6 +1,8 @@
 # BizBoxMeetingManager-
 BizBox 웹 페이지를 기반으로 회의실 등록 및 조회하는 프로그램 만들어보기
 
+# 주의사항
+- 개인 노트북에서 사용하실 것을 권장함.
 # 화면
 
 ![image info](./output.PNG)
