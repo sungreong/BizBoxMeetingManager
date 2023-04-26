@@ -230,6 +230,10 @@ class Schedule(QWidget):
                 self.table.setRowHidden(row, False)  # 필터링 조건에 부합하는 경우 행 표시
                 CHECK_COUNT += 1 
                 used_meeeting_room.append(self.table.item(row, 3).text())
+            elif  (endTime >= end_time and startTime <= start_time) :
+                self.table.setRowHidden(row, False)  # 필터링 조건에 부합하는 경우 행 표시
+                CHECK_COUNT += 1 
+                used_meeeting_room.append(self.table.item(row, 3).text())
             else:
                 self.table.setRowHidden(row, True)  # 필터링 조건에 부합하지 않는 경우 행 숨김
         else :
@@ -276,7 +280,7 @@ class Schedule(QWidget):
         if len(self.attendees_text.text()) == 0 :
             attendee_list = []
         else :
-            attendee_list = [i.stirp() for i in self.attendees_text.text().split(",")]
+            attendee_list = [i.strip() for i in self.attendees_text.text().split(",")]
         try :
             self.bizbox.add_schedule(title=content,date=date, start_time=start_time, end_time=end_time, meeting_room=room,attendee_list=attendee_list,)
         except Exception as e :

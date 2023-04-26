@@ -14,6 +14,7 @@ class BizBoxCommon(object):
     def __init__(self, user="##", pw="##"):
         self.user = user
         self.pw = pw
+        self.click_count =0
 
     def open(self):
         options = webdriver.ChromeOptions()
@@ -30,6 +31,7 @@ class BizBoxCommon(object):
         self.open()
         print("사이트로 접속합니다.")
         self.driver.get("http://gw.agilesoda.ai/gw/uat/uia/egovLoginUsr.do")
+        
 
     def login(self):
         search_box_id = self.driver.find_element_by_xpath('//*[@id="userId"]')
@@ -39,20 +41,41 @@ class BizBoxCommon(object):
         )
 
         print("로그인을 실시합니다")
-        search_box_id.send_keys(self.user)
-        search_box_passwords.send_keys(self.pw)
-        login_btn.click()
-        sleep(0.5)
-        self.access_main()
+        try :
+            search_box_id.send_keys(self.user)
+            search_box_passwords.send_keys(self.pw)
+            login_btn.click()
+            sleep(0.5)
+            self.access_main()
+            self.driver.find_element_by_xpath("//div[@class='fm_div fm_sc']").click()
+        
+            if self.click_count % 2 == 0 :    
+                button = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, '//div[@id="1dep"]/span'))
+                )
+                button.click()
+                self.click_count+=1
+            else :
+                pass 
+        except Exception as e :
+            print("로그인 정보가 올바르지 않은 경우, info.ini 파일생성 후, id와 pw가 잘 설정되어있는 지 확인해주세요.")
+            import os 
+            from pathlib import Path
+            folder_path = str(Path(__file__).parent.parent)
+            os.startfile(folder_path)
+            raise Exception(e)
+        
+    def access_main(self):
+        self.driver.switch_to_window(self.driver.window_handles[0])  # main page
+
+    def access_sub(self):
+        self.driver.get("http://gw.agilesoda.ai/gw/userMain.do")
         self.driver.find_element_by_xpath("//div[@class='fm_div fm_sc']").click()
-    
         button = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//div[@id="1dep"]/span'))
         )
         button.click()
-        
-    def access_main(self):
-        self.driver.switch_to_window(self.driver.window_handles[0])  # main page
+        self.click_count+=1
 
     def get_meeting_room_info(self, date="YYYY-MM-DD"):
         try :
@@ -61,27 +84,31 @@ class BizBoxCommon(object):
             # 링크 엘리먼트 찾기
             link = self.driver.find_element_by_id("302020000_anchor")
             link.click()
+        
             # iframe_wrap 엘리먼트 찾기
             iframe_element = self.driver.find_element_by_tag_name("iframe")
 
             self.driver.switch_to.frame(iframe_element)
-
+            sleep(0.5)
             """
             # 회의실 예약 정보 확인하기
             """
+            print(f"조회할 회의실 날짜 선택 {date}")
             date_element = self.driver.find_element_by_id("from_date")
             self.driver.execute_script(f"arguments[0].value = '{date}';", date_element)
 
             date_element = self.driver.find_element_by_id("to_date")
             self.driver.execute_script(f"arguments[0].value = '{date}';", date_element)
-
+            sleep(0.5)
             # 버튼 요소를 찾습니다.
+            print(f"조회할 회의실 날짜 클릭 {date}")
             button = self.driver.find_element_by_id("searchButton")
 
             # 버튼을 클릭합니다.
             button.click()
 
-            sleep(0.5)
+            sleep(1)
+            print(f"조회할 페이지 선택 ")
             # 페이지에서 k-pager-numbers 클래스를 가진 엘리먼트 가져오기
             page_numbers = self.driver.find_element_by_class_name("k-pager-numbers")
 
@@ -94,10 +121,13 @@ class BizBoxCommon(object):
             else :
                 max_page_number = int(max([page_link.get_attribute("data-page") for page_link in page_links]))
         except Exception as e : 
+            print(e)
             raise Exception(e)
         # 데이터를 저장할 빈 리스트 생성
+        print(f"페이지별로 데이터 조회")
         data = []
         for page_number in range(1, max_page_number + 1):
+            print(f"페이지별로 데이터 조회... {page_number}/{max_page_number}")
 
             # 페이지 숫자를 클릭하고자 하는 요소를 찾습니다.
             page_number = self.driver.find_element_by_xpath(f"//a[@data-page='{page_number}']")
@@ -142,37 +172,44 @@ class BizBoxCommon(object):
         return df_room
 
     def add_schedule(self, title="제목", date="2021-01-01", start_time="09:00", end_time="10:00", meeting_room="2F) 대회의실", attendee_list=[],) :
-                    
+        
         # iFrame에서 기본 페이지로 돌아가기
-        self.driver.switch_to.default_content()
+        self.access_sub()
+        sleep(1.0)
         # 링크 엘리먼트 찾기
+        
         link = self.driver.find_element_by_id("302020000_anchor")
         link.click()
+            
+        sleep(1.0)
 
         # iframe_wrap 엘리먼트 찾기
         iframe_element = self.driver.find_element_by_tag_name("iframe")
 
         self.driver.switch_to.frame(iframe_element)
-
+        sleep(0.5)
+        print(f"등륵 버튼 클릭")
         # 버튼 클릭
         button_element = self.driver.find_element_by_id("registRes")
         button_element.click()
-
-
+        sleep(0.5)
+        print(f"회의실 멍 셜정")
         search_title_id = self.driver.find_element_by_xpath('//*[@id="res_reserve_name"]')
         search_title_id.send_keys(title)
         date_element = self.driver.find_element_by_id("from_date")
         date_element.send_keys(date)
         date_element.send_keys(Keys.ENTER)
+        sleep(0.5)
 
         # 변경된 값을 확인
         changed_value = date_element.get_attribute("value")
 
         # 자바스크립트 코드 실행
+        print(f"회의실 기간 설정")
         self.driver.execute_script(f'document.getElementById("from_date").value = "{date}";')
         self.driver.execute_script(f'document.getElementById("to_date").value = "{date}";')
 
-        # Select 객체 생성
+        print(f"회의실 시간 설정")
         select_box = Select(self.driver.find_element_by_id("sc_combox_2"))
         # 24:00 선택
         select_box.select_by_value(start_time)
@@ -182,6 +219,7 @@ class BizBoxCommon(object):
         select_box.select_by_value(end_time)
         sleep(1)
         # resource_search 접근
+        print(f"회의실 자원 설정")
         button = self.driver.find_element_by_xpath("//button[@onclick='javascript:resourceSearch(1)']")  # 버튼을 찾습니다.
         button.click()
 
@@ -197,6 +235,8 @@ class BizBoxCommon(object):
         ##########################
         # 추가 인원 등록 
         # 사용자 추가
+        
+        print(f"사용자 추가 설정")
         self.driver.switch_to_window(self.driver.window_handles[0])  # search page
         iframe_element = self.driver.find_element_by_tag_name("iframe")
 
@@ -204,9 +244,9 @@ class BizBoxCommon(object):
         button = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(text(), '선택')]"))
         )
-
         # 버튼을 클릭합니다.
         button.click()
+        sleep(1)
         if attendee_list == [] :
             pass 
         else :
@@ -227,17 +267,17 @@ class BizBoxCommon(object):
                 element = self.driver.find_element_by_xpath(f"//td[contains(text(), '{person}')]/..//input[@type='checkbox']")
                 self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
                 self.driver.execute_script("arguments[0].click();", element)
-
+            print(f"사용자 확정")
             button = self.driver.find_element_by_id("btn_save")
             self.driver.execute_script("arguments[0].click();", button)
 
         ##########################
-
+        
         self.driver.switch_to_window(self.driver.window_handles[0])  # main page
         iframe_element = self.driver.find_element_by_tag_name("iframe")
         self.driver.switch_to.frame(iframe_element)
         self.driver.execute_script("window.scrollBy(0, 800);")
-
+        print(f"저장 버튼 클릭")
         # 해당 버튼을 찾습니다.
         button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@id='save_regist']")))
         button.click()
