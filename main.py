@@ -226,7 +226,7 @@ class Schedule(QWidget):
         for row in range(self.table.rowCount()):
             startTime = self.table.item(row, 1).text()  # 시작 시간
             endTime = self.table.item(row, 2).text()  # 종료 시간
-            if startTime <= end_time and endTime >= start_time and (startTime >= start_time and startTime <= end_time) or (endTime >= start_time and endTime <= end_time) :
+            if (startTime < end_time and endTime > start_time) and (startTime >= start_time and startTime <= end_time) or (endTime > start_time and endTime <= end_time) :
                 self.table.setRowHidden(row, False)  # 필터링 조건에 부합하는 경우 행 표시
                 CHECK_COUNT += 1 
                 used_meeeting_room.append(self.table.item(row, 3).text())

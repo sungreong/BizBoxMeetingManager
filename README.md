@@ -54,6 +54,15 @@ pw=12345
 홍길동, 김철수, 이영희, 박영수
 ```
 
+# 실행 파일로 만들기
+
+```
+pyinstaller --name manager  --onedir main.py
+
+pyinstaller --onefile --add-data "info.ini;." --add-data "src;src" --hidden-import=chromedriver_autoinstaller --hidden-import=pandas --hidden-import=PyQt5 --hidden-import=selenium myscript.py
+
+
+```
 
 # TODO
 
