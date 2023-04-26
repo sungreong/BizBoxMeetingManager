@@ -3,7 +3,10 @@ BizBox 웹 페이지를 기반으로 회의실 등록 및 조회하는 프로그
 
 # 튜토리얼 영상
 
-<img src="./tutorial.mp4">
+
+
+<video src="./tutorial.mp4" autoplay loop muted> </video>
+
 
 # 주의사항
 - 개인 노트북에서 사용하실 것을 권장함.
