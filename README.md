@@ -5,7 +5,7 @@ BizBox 웹 페이지를 기반으로 회의실 등록 및 조회하는 프로그
 
 
 
-<video src="./tutorial.mp4" autoplay loop muted> </video>
+<img src='./tutorial.gif'> </img>
 
 
 # 주의사항
