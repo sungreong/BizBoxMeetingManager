@@ -57,10 +57,10 @@ pw=12345
 # 실행 파일로 만들기
 
 ```
-pyinstaller --name manager  --onedir main.py
 
-pyinstaller --onefile --add-data "info.ini;." --add-data "src;src" --hidden-import=chromedriver_autoinstaller --hidden-import=pandas --hidden-import=PyQt5 --hidden-import=selenium myscript.py
+# pyinstaller --onefile --add-data "info.ini;." --add-data "src;src" --hidden-import=chromedriver_autoinstaller --hidden-import=pandas --hidden-import=PyQt5 --hidden-import=selenium main.py
 
+pyinstaller --icoc agilesoda.ico --name "manager" --windowed  --add-data "src;src"  main.py
 
 ```
 
